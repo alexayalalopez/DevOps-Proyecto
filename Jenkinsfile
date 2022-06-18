@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                dir("Servicios\Curso-Microservicios"){
-                sh "docker build -t microservicio ."
+                dir("Servicios/Curso-Microservicios"){
+                  sh "docker build -t microservicio ."
                 }
             }
         }
