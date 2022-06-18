@@ -1,8 +1,10 @@
 pipeline {
     agent any
-
+    tools {
+        maven 'M3_8_6'
+    }
     stages {
-stage('Validate'){
+        stage('Validate'){
             steps {
                 dir("Servicios/Curso-Microservicios"){
                     withSonarQubeEnv('SonarServer'){
