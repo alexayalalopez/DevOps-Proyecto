@@ -26,8 +26,9 @@ pipeline {
              sh 'docker login 192.168.0.53:8083 -u $USERNAME -p $PASSWORD'
              sh 'docker stop microservicio || true'
              sh 'docker run -d --rm --name microservicio -e SPRING_PROFILES_ACTIVE=dev -p 8090:8090 192.168.0.53:8083/repository/docker-private/microservicio:latest'
-            }
-        }         
+             }
+           } 
+       }        
         stage('Database') {
             steps {
                 dir("liquibase/"){
