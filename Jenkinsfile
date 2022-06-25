@@ -20,12 +20,28 @@ pipeline {
                 }
             }
         }
+         stage('Deploy Service') {
+            steps {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker_nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+             sh 'docker login 192.168.0.53:8083 -u $USERNAME -p $PASSWORD'
+             sh 'docker stop microservicio || true'
+             sh 'docker run -d --rm --name microservicio -e SPRING_PROFILES_ACTIVE=dev -p 8090:8090 192.168.0.53:8083/repository/docker-private/microservicio:latest'
+            }
+        }         
         stage('Database') {
             steps {
                 dir("liquibase/"){
                   sh '/opt/liquibase/liquibase --changeLogFile="changesets/db.changelog-master.xml" update'
                 }
             }
-        }        
+        } 
+         stage('Stress') {
+            steps {
+                sleep 5
+                dir("GatlingTest/"){
+                  sh 'mvn gatling:test -Dgatling.simulationClass=microservice.PingUsersSimulation'
+                }
+            }
+        }                      
     }
 }
